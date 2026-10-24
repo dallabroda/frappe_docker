@@ -1,6 +1,7 @@
 # syntax=docker/dockerfile:1
 
-ARG PYTHON_VERSION=3.14
+# Cred Hub: versions pinned to what runs in production (no moving tags)
+ARG PYTHON_VERSION=3.14.9
 ARG DEBIAN_BASE=trixie
 FROM python:${PYTHON_VERSION}-slim-${DEBIAN_BASE} AS base
 
@@ -12,7 +13,7 @@ ARG WKHTMLTOPDF_VERSION=0.12.6.1-3
 ARG WKHTMLTOPDF_DISTRO=bookworm
 ARG INSTALL_CHROMIUM=true
 
-ARG NODE_VERSION=24
+ARG NODE_VERSION=24.22.1
 ENV NVM_DIR=/home/frappe/.nvm
 ENV NVM_SYMLINK_CURRENT=true
 ENV PATH=${NVM_DIR}/current/bin/:${PATH}
@@ -79,7 +80,7 @@ RUN useradd -u 1000 -g 0 -d /home/frappe -ms /bin/bash frappe \
     && rm -rf /var/lib/apt/lists/* \
     && rm -fr /etc/nginx/sites-enabled/default \
     && mkdir -p /etc/nginx/snippets \
-    && pip3 install frappe-bench \
+    && pip3 install "frappe-bench @ git+https://github.com/dallabroda/bench@35eb4ac9cc1ef1d4753604a50e7c16d5929185fa" \
     # Fixes for non-root nginx and logs to stdout
     && sed -i '/user www-data/d' /etc/nginx/nginx.conf \
     && ln -sf /dev/stdout /var/log/nginx/access.log && ln -sf /dev/stderr /var/log/nginx/error.log \
@@ -126,8 +127,8 @@ RUN apt-get update \
 
 USER frappe
 
-ARG FRAPPE_BRANCH=version-16
-ARG FRAPPE_PATH=https://github.com/frappe/frappe
+ARG FRAPPE_BRANCH=main
+ARG FRAPPE_PATH=https://github.com/dallabroda/frappe
 ARG CACHE_BUST=""
 
 # Apply group permissions after app installation and cleanup, before the runtime COPY.
