@@ -57,7 +57,7 @@ RUN useradd -u 1000 -g 0 -d /home/frappe -ms /bin/bash frappe \
     && . ${NVM_DIR}/nvm.sh \
     && nvm install ${NODE_VERSION} \
     && nvm use ${NODE_VERSION} \
-    && npm install -g yarn \
+    && npm install -g yarn@1.22.22 \
     && corepack enable pnpm \
     && nvm alias default ${NODE_VERSION} \
     && rm -rf ${NVM_DIR}/.cache \
@@ -127,7 +127,7 @@ RUN apt-get update \
 
 USER frappe
 
-ARG FRAPPE_BRANCH=main
+ARG FRAPPE_BRANCH=ch-16.53.0-2
 ARG FRAPPE_PATH=https://github.com/dallabroda/frappe
 ARG CACHE_BUST=""
 
