@@ -94,6 +94,10 @@ RUN useradd -u 1000 -g 0 -d /home/frappe -ms /bin/bash frappe \
 
 FROM base AS builder
 
+# Same Python package versions as production (resources/credhub/constraints.txt)
+COPY resources/credhub/constraints.txt /opt/credhub/constraints.txt
+ENV PIP_CONSTRAINT=/opt/credhub/constraints.txt \n    UV_CONSTRAINT=/opt/credhub/constraints.txt
+
 RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
     # For frappe framework
